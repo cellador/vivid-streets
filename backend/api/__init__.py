@@ -6,7 +6,6 @@ from bson.objectid import ObjectId
 from flask import Flask
 from flask_pymongo import PyMongo
 
-
 class JSONEncoder(json.JSONEncoder):
     ''' extend json-encoder class'''
 

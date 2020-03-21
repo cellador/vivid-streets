@@ -1,13 +1,15 @@
-''' controller and routes for users '''
+"""Controller and routes for users."""
 from flask import request, jsonify
 from api import app, mongo
 import os
 import logger
-''' PRINT WITH import sys; print('Printing data:', file=sys.stderr) '''
+
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(
     __name__, filename=os.path.join(ROOT_PATH, 'output.log'))
+
+LOG.info("Loaded api.controllers.user.py")
 
 
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])

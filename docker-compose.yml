@@ -12,11 +12,12 @@ services:
     volumes:
       - ./backend:/usr/src/app
     environment:
-      - ENV=development
+      - ENV=prod
       - PORT=5000
       - DB=mongodb://mongodb:27017/todoDev
+
   mongodb:
-    image: mongo:latest
+    image: mongo:4.2.3
     container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db
@@ -33,8 +34,8 @@ services:
       context: ./client
       dockerfile: Dockerfile
     volumes:
-      - './client:/usr/src/app'
-      - '/usr/src/app/node_modules'
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - '3000:3000'
     depends_on:
