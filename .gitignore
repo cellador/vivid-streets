@@ -1,3 +1,7 @@
 *.pyc
 backend/__pycache__
+backend/output.log
+backend/logger/__pycache__
+backend/api/__pycache__
+backend/api/controllers/__pycache__
 client/node_modules
