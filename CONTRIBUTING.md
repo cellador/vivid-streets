@@ -7,7 +7,7 @@ To run the container and install any dependencies left (this may take a while fo
 `docker-compose up --build`
 
 To contribute, you have to first generate a new branch using
-`git branch -a <name_of_new_branch>`
+`git branch <name_of_new_branch>`
 and do whatever you want! If you want to launch the page and test any changes you've made, just hit re-enter the docker-compose command above.
 
 The `master` branch is exactly that, we since we cannot disallow people from pushing `master`, we agreed to only work on seperate branches 
