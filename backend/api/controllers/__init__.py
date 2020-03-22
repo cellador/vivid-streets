@@ -1,11 +1,3 @@
-''' flask app with mongo 
-import os
-import json
-import datetime
-from flask import Flask
-
-# create the flask object
-app = Flask(__name__) '''
 ''' all controllers for various collections of database '''
 import os
 import glob

@@ -34,8 +34,8 @@ services:
       context: ./client
       dockerfile: Dockerfile
     volumes:
-      - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - './client:/usr/src/app'
+      - '/usr/src/app/node_modules'
     ports:
       - '3000:3000'
     tty: true
@@ -43,5 +43,6 @@ services:
       - "flask-api"
     environment:
       - NODE_ENV=development
+      - NODE_PATH=/usr/src/app
       - CHOKIDAR_USEPOLLING=true
       - HOST_URL=http://0.0.0.0:5000
