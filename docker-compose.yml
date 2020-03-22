@@ -38,6 +38,7 @@ services:
       - /usr/src/app/node_modules
     ports:
       - '3000:3000'
+    tty: true
     depends_on:
       - "flask-api"
     environment:
