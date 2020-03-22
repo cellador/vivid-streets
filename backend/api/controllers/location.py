@@ -15,7 +15,7 @@ LOG.info("Loaded api.controllers.location.py")
 def location():
     if request.method == 'GET':
         query = request.args
-        data = mongo.db.loc.find_one(query)
+        data = list(mongo.db.loc.find(query)) 
         return jsonify(data), 200
 
     data = request.get_json()
