@@ -15,6 +15,8 @@ services:
       - ENV=development
       - PORT=5000
       - DB=mongodb://mongodb:27017/todoDev
+    env_file:
+      - backend-secret.env
 
   mongodb:
     image: mongo:4.2.3
@@ -28,6 +30,13 @@ services:
       - 27017:27017
     command: mongod --logpath=/dev/null # --quiet
 
+  mongo_seed:
+    build: ./mongo-seed
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
   client:
     container_name: react-app
     build:
@@ -40,9 +49,12 @@ services:
       - '3000:3000'
     tty: true
     depends_on:
-      - "flask-api"
+      - flask-api
     environment:
       - NODE_ENV=development
       - NODE_PATH=/usr/src/app/node_modules
       - CHOKIDAR_USEPOLLING=true
       - HOST_URL=http://0.0.0.0:5000
+    env_file:
+      - react-secret.env
+
