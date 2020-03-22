@@ -10,9 +10,9 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./backend:/usr/src/app
+      - "./backend:/usr/src/app"
     environment:
-      - ENV=prod
+      - ENV=development
       - PORT=5000
       - DB=mongodb://mongodb:27017/todoDev
 
@@ -43,6 +43,6 @@ services:
       - "flask-api"
     environment:
       - NODE_ENV=development
-      - NODE_PATH=/usr/src/app
+      - NODE_PATH=/usr/src/app/node_modules
       - CHOKIDAR_USEPOLLING=true
       - HOST_URL=http://0.0.0.0:5000
