@@ -15,3 +15,8 @@
 2020-03-22 12:26:36,472 - root - INFO - running environment: prod
 2020-03-22 12:27:03,267 - api.controllers.user - INFO - Loaded api.controllers.user.py
 2020-03-22 12:27:03,269 - root - INFO - running environment: prod
+2020-03-22 12:46:18,947 - api.controllers.user - INFO - Loaded api.controllers.user.py
+2020-03-22 12:46:18,948 - root - INFO - running environment: prod
+2020-03-22 12:58:15,870 - api.controllers.user - INFO - Loaded api.controllers.user.py
+2020-03-22 12:58:15,871 - root - INFO - running environment: prod
+2020-03-22 12:58:37,286 - root - ERROR - 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
