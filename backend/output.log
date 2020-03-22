@@ -7,3 +7,11 @@
 2020-03-21 22:25:15,416 - root - INFO - running environment: prod
 2020-03-21 22:31:59,508 - api.controllers.user - INFO - Loaded api.controllers.user.py
 2020-03-21 22:31:59,510 - root - INFO - running environment: prod
+2020-03-22 12:20:41,035 - root - INFO - running environment: prod
+2020-03-22 12:20:41,035 - root - INFO - root path: /usr/src/app
+2020-03-22 12:22:18,241 - api.controllers.user - INFO - Loaded api.controllers.user.py
+2020-03-22 12:22:18,242 - root - INFO - running environment: prod
+2020-03-22 12:26:36,471 - api.controllers.user - INFO - Loaded api.controllers.user.py
+2020-03-22 12:26:36,472 - root - INFO - running environment: prod
+2020-03-22 12:27:03,267 - api.controllers.user - INFO - Loaded api.controllers.user.py
+2020-03-22 12:27:03,269 - root - INFO - running environment: prod

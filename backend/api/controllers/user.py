@@ -6,8 +6,7 @@ import logger
 
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
-LOG = logger.get_root_logger(
-    __name__, filename=os.path.join(ROOT_PATH, 'output.log'))
+LOG = logger.get_root_logger(__name__, filename=os.path.join(ROOT_PATH, 'output.log'))
 
 LOG.info("Loaded api.controllers.user.py")
 
