@@ -1,9 +1,9 @@
 #!/bin/sh
-if [[ ! -f "backend-secret.env" ]]; then
-    touch backend-secret.env
+if [ ! -f "backend-secret.env" ]; then
+    echo "JWT_SECRET_KEY="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32 ; echo '') > backend-secret.env
 fi
 
-if [[ ! -f "react-secret.env" ]]; then
+if [ ! -f "react-secret.env" ]; then
     touch react-secret.env
 fi
 

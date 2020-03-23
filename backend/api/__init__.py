@@ -32,7 +32,7 @@ CORS(app)
 app.config['MONGO_URI'] = os.environ.get('DB')
 mongo = PyMongo(app)
 
-app.config['JWT_SECRET_KEY'] = os.environ.get('SECRET')
+app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
 flask_bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
