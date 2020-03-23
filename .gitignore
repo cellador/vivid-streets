@@ -1,3 +1,4 @@
+*.env
 *.log
 *.pyc
 backend/__pycache__
