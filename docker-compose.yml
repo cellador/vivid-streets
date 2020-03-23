@@ -1,6 +1,21 @@
 version: '3.5'
 
 services:
+  mongodb:
+    image: mongo:4.2.3
+    container_name: "mongodb"
+    environment:
+      - MONGO_USER=mongodb
+      #- MONGO_DATA_DIR=/usr/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=vivid-streets
+    volumes:
+      - ./mongo-seed/init.js:/docker-entrypoint-initdb.d/init.js
+    #  - ./data/db:/usr/data/db
+    ports:
+      - 27017:27017
+    command: mongod --quiet
+    
   flask-api:
     container_name: app-app
     restart: always
@@ -14,19 +29,18 @@ services:
     environment:
       - ENV=development
       - PORT=5000
-      - DB=mongodb://mongodb:27017/todoDev
+      - DB=mongodb://mongodb:27017/vivid-streets
+    env_file:
+      - backend-secret.env
+    depends_on:
+      - mongodb
 
-  mongodb:
-    image: mongo:4.2.3
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/usr/data/db
-      - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./data/db:/usr/data/db
-    ports:
-      - 27017:27017
-    command: mongod --logpath=/dev/null # --quiet
+  #mongo_seed:
+  #  build: ./mongo-seed
+  #  links:
+  #    - mongodb
+  #  depends_on:
+  #    - flask-api
 
   client:
     container_name: react-app
@@ -40,9 +54,12 @@ services:
       - '3000:3000'
     tty: true
     depends_on:
-      - "flask-api"
+      - flask-api
     environment:
       - NODE_ENV=development
       - NODE_PATH=/usr/src/app/node_modules
       - CHOKIDAR_USEPOLLING=true
-      - HOST_URL=http://0.0.0.0:5000
+    #  - HOST_URL=http://0.0.0.0:5000
+    env_file:
+      - react-secret.env
+

@@ -14,6 +14,7 @@ LOG.info("Loaded api.controllers.location.py")
 def location():
     if request.method == 'GET':
         query = request.args
+
         queryJson = request.get_json()
 
         if queryJson.get('queryType', None) is None:
