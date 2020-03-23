@@ -14,7 +14,7 @@ services:
     #  - ./data/db:/usr/data/db
     ports:
       - 27017:27017
-    command: mongod # --quiet
+    command: mongod --quiet
     
   flask-api:
     container_name: app-app
@@ -59,7 +59,7 @@ services:
       - NODE_ENV=development
       - NODE_PATH=/usr/src/app/node_modules
       - CHOKIDAR_USEPOLLING=true
-      - HOST_URL=http://0.0.0.0:5000
+    #  - HOST_URL=http://0.0.0.0:5000
     env_file:
       - react-secret.env
 

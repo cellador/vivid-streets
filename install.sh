@@ -1,3 +1,4 @@
+#!/bin/sh
 if [[ ! -f "backend-secret.env" ]]; then
     touch backend-secret.env
 fi
