@@ -4,6 +4,14 @@ import GoogleMapReact from 'google-map-react';
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
  
+function objToQueryString(obj) {
+  const keyValuePairs = [];
+  for (const key in obj) {
+    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+  }
+  return keyValuePairs.join('&');
+}
+
 class App extends Component {  
     constructor (props) {
         super(props);
@@ -18,7 +26,16 @@ class App extends Component {
     };
 
     async componentDidMount() {
-        fetch( CONFIG.API_BASE_URL + '/location')
+
+        const queryString = objToQueryString({
+            queryType: "loc",
+            latMin: -90,
+            latMax: 90,
+            longMin: -180,
+            longMax: 180
+        });
+        
+        fetch( CONFIG.API_BASE_URL + '/location?' + queryString)
             .then(async response => {
                 const data = await response.json();
 

@@ -3,48 +3,72 @@ from flask import request, jsonify
 from api import app, mongo
 import os
 import logger
-import json
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(__name__, filename=os.path.join(ROOT_PATH, 'output.log'))
 
 LOG.info("Loaded api.controllers.location.py")
 
+
 @app.route('/location', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def location():
     if request.method == 'GET':
-        query = request.args
+        requestArgs = request.args
 
-        queryJson = request.get_json()
+        try:
+            if requestArgs.get('queryType') is None:
+                return jsonify('queryType not specified you motherfucker! Specify either \
+queryType=loc or label to perform a query')
+        except AttributeError as err:
+            return jsonify('No arguments passed: Please pass queryType and latMin/Max, longMin/Max')
 
-        if queryJson.get('queryType', None) is None:
-            return jsonify("queryType not specified you motherfucker! Specify either 'loc' or 'label' to perform a query")
-        
-        if queryJson['queryType'] == "loc":
+        if requestArgs['queryType'] == "loc":
 
             # get locations from db
-            if queryJson.get('latMax', None) is not None and queryJson.get('latMin', None) is not None and queryJson.get('longMax', None) is not None and queryJson.get('longMin', None) is not None:
-                data = list(mongo.db.loc.find({'latitude': {'$lte': queryJson.get('latMax', None), '$gte': queryJson.get('latMin', None)}, 'longitude': {'$lte': queryJson.get('longMax', None), '$gte': queryJson.get('longMin', None)}}))
-            elif queryJson.get('latMax', None) is not None and queryJson.get('latMin', None) is not None and queryJson.get('longMax', None) is None and queryJson.get('longMin', None) is None:
-                data = list(mongo.db.loc.find({'latitude': {'$lte': queryJson.get('latMax', None), '$gte': queryJson.get('latMin', None)}}))
-            elif queryJson.get('latMax', None) is None and queryJson.get('latMin', None) is None and queryJson.get('longMax', None) is not None and queryJson.get('longMin', None) is not None:
-                data = list(mongo.db.loc.find({'longitude': {'$lte': queryJson.get('longMax', None), '$gte': queryJson.get('longMin', None)}}))
+            if requestArgs.get('latMax') is not None and \
+               requestArgs.get('latMin') is not None and \
+               requestArgs.get('longMax') is not None and \
+               requestArgs.get('longMin') is not None:
+                data = list(mongo.db.loc.find(
+                    {'latitude': {'$lte': float(requestArgs.get('latMax')),
+                                  '$gte': float(requestArgs.get('latMin'))},
+                     'longitude': {'$lte': float(requestArgs.get('longMax')),
+                                   '$gte': float(requestArgs.get('longMin'))}}))
+            elif requestArgs.get('latMax') is not None and \
+              requestArgs.get('latMin') is not None and \
+              requestArgs.get('longMax') is None and \
+              requestArgs.get('longMin') is None:
+                data = list(mongo.db.loc.find(
+                    {'latitude': {'$lte': float(requestArgs.get('latMax')),
+                                  '$gte': float(requestArgs.get('latMin'))}}))
+            elif requestArgs.get('latMax') is None and \
+              requestArgs.get('latMin') is None and \
+              requestArgs.get('longMax') is not None and \
+              requestArgs.get('longMin') is not None:
+                data = list(mongo.db.loc.find(
+                    {'longitude': {'$lte': float(requestArgs.get('longMax')),
+                                   '$gte': float(requestArgs.get('longMin'))}}))
             return jsonify(data), 200
 
-        elif queryJson['queryType'] == "label":
-            label = queryJson['label']
+        elif requestArgs['queryType'] == "label":
+            label = requestArgs['label']
             if label is not None:
                 data = list(mongo.db.loc.find({'label': label}))
             return jsonify(data), 200
 
         else:
-            return jsonify("Invalid queryType specified, asshole! Specify either 'loc' or 'label' to perform a query"), 400
+            return jsonify("Invalid queryType specified, asshole! Specify either 'loc' \
+                            or 'label' to perform a query"), 400
 
     data = request.get_json()
     if request.method == 'POST':
-        if data.get('latitude', None) is not None and data.get('longitude', None) is not None and data.get('label', None) is not None:
+        if data.get('latitude', None) is not None and \
+          data.get('longitude', None) is not None and \
+          data.get('label', None) is not None:
             # minimal data for inserting a location
-            mongo.db.loc.insert_one({'label': data['label'], 'latitude': data['latitude'], 'longitude': data['longitude']})
+            mongo.db.loc.insert_one({'label': data['label'],
+                                     'latitude': data['latitude'],
+                                     'longitude': data['longitude']})
             return jsonify({'ok': True, 'message': 'Location created successfully!'}), 200
         else:
             return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
