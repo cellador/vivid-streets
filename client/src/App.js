@@ -3,9 +3,10 @@ import { CONFIG } from './config.js'
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
+import SignUp from './modal/SignUp.js'
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
- 
+
 function objToQueryString(obj) {
   const keyValuePairs = [];
   for (const key in obj) {
@@ -14,7 +15,7 @@ function objToQueryString(obj) {
   return keyValuePairs.join('&');
 }
 
-class App extends Component {  
+class App extends Component {
     constructor (props) {
         super(props);
         this.state = {
@@ -36,7 +37,7 @@ class App extends Component {
             longMin: -180,
             longMax: 180
         });
-        
+
         fetch( CONFIG.API_BASE_URL + '/location?' + queryString)
             .then(async response => {
                 const data = await response.json();
@@ -55,18 +56,20 @@ class App extends Component {
             }
         );
     }
- 
+
     render() {
         return (
             // Important! Always set the container height explicitly
-            <div style={{ height: '100vh', width: '100%' }}>
+            <div style={{ height: '80vh', width: '100%' }}>
                 <Menu>
                     <a id="home" className="menu-item" href="/">Home</a>
+                    <SignUp>Sign Up</SignUp>
                     <a id="about" className="menu-item" href="/about">About</a>
                     <a id="contact" className="menu-item" href="/contact">Contact</a>
                     <a onClick={ this.showSettings } className="menu-item--small" href="">Settings</a>
                 </Menu>
-                
+
+
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
                     defaultCenter={this.props.center}
@@ -80,9 +83,11 @@ class App extends Component {
                     />
                 ))}
                 </GoogleMapReact>
+
+
             </div>
         );
     }
 }
- 
+
 export default App;
