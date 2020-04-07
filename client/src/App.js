@@ -1,9 +1,19 @@
 import React, { Component } from 'react';
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.js'
+import './App.css';
 import GoogleMapReact from 'google-map-react';
+import Menu from 'react-burger-menu/lib/menus/slide'
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
  
+function objToQueryString(obj) {
+  const keyValuePairs = [];
+  for (const key in obj) {
+    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+  }
+  return keyValuePairs.join('&');
+}
+
 class App extends Component {  
     constructor (props) {
         super(props);
@@ -18,7 +28,17 @@ class App extends Component {
     };
 
     async componentDidMount() {
-        fetch( CONFIG.API_BASE_URL + '/location')
+
+        const queryString = objToQueryString({
+            collection: "public",
+            queryType: "loc",
+            latMin: -90,
+            latMax: 90,
+            longMin: -180,
+            longMax: 180
+        });
+        
+        fetch( CONFIG.API_BASE_URL + '/location?' + queryString)
             .then(async response => {
                 const data = await response.json();
 
@@ -41,6 +61,13 @@ class App extends Component {
         return (
             // Important! Always set the container height explicitly
             <div style={{ height: '100vh', width: '100%' }}>
+                <Menu>
+                    <a id="home" className="menu-item" href="/">Home</a>
+                    <a id="about" className="menu-item" href="/about">About</a>
+                    <a id="contact" className="menu-item" href="/contact">Contact</a>
+                    <a onClick={ this.showSettings } className="menu-item--small" href="">Settings</a>
+                </Menu>
+                
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
                     defaultCenter={this.props.center}
@@ -53,13 +80,6 @@ class App extends Component {
                         text="My Marker"
                     />
                 ))}
-                {/*this.state.locations.map((loc) => 
-                <AnyReactComponent
-                    lat={loc.latitude}
-                    lng={loc.longitude}
-                    text="My Marker"
-                />
-                );*/}
                 </GoogleMapReact>
             </div>
         );

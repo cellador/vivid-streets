@@ -3,4 +3,7 @@ Flask==1.1.1
 Flask-Cors==3.0.8
 pymongo==3.10.1
 flask_pymongo==2.3.0
+flask_jwt_extended==3.24.1
+flask_bcrypt==0.7.1
+jsonschema==3.2.0
 python-bsonjs==0.2.0
