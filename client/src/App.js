@@ -60,7 +60,7 @@ class App extends Component {
     render() {
         return (
             // Important! Always set the container height explicitly
-            <div style={{ height: '80vh', width: '100%' }}>
+            <div style={{ height: '100vh', width: '100%' }}>
                 <Menu>
                     <a id="home" className="menu-item" href="/">Home</a>
                     <SignUp>Sign Up</SignUp>

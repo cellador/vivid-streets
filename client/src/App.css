@@ -1,10 +1,10 @@
-a, a:visited {
+a, a:visited, button.bm-item {
   text-decoration: none;
   outline: 0;
   color: #666666;
 }
 
-a:hover {
+a:hover, button.bm-item{
   color: #444444;
   cursor: pointer;
 }
@@ -72,6 +72,14 @@ Note: Beware of modifying this element as it can break the animations - you shou
 /* Individual item */
 .bm-item {
   display: inline-block;
+}
+
+/* Obviously a button.bm-item*/
+button.bm-item {
+  background: none!important;
+  border: none;
+  cursor: pointer;
+  font-size: 1.15em;
 }
 
 /* Styling of overlay */
