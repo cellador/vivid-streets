@@ -61,8 +61,13 @@ class SignUp extends Component {
   render() {
     return (
       <div>
-        <button className="bm-item menu-item" onClick={this.switch}>{this.props.children}</button>
+        <button className="link-looking-button" onClick={this.switch}>{this.props.children}</button>
         <Modal show={this.state.show}>
+
+
+
+
+
           Sign Up for an Account
           <button onClick={this.switch}>
             Close this shit!

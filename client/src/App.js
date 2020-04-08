@@ -63,7 +63,7 @@ class App extends Component {
             <div style={{ height: '100vh', width: '100%' }}>
                 <Menu>
                     <a id="home" className="menu-item" href="/">Home</a>
-                    <SignUp>Sign Up</SignUp>
+                    <SignUp className="menu-item">Sign Up</SignUp>
                     <a id="about" className="menu-item" href="/about">About</a>
                     <a id="contact" className="menu-item" href="/contact">Contact</a>
                     <a onClick={ this.showSettings } className="menu-item--small" href="">Settings</a>
