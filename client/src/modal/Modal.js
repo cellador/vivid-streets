@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import './Modal.css';
 
 const ModalInner = ({children}) =>
-  <div class="modal-wrapper">
-    <div class="modal-inner">
+  <div className="modal-wrapper">
+    <div className="modal-inner">
       {children}
     </div>
   </div>

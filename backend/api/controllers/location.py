@@ -20,7 +20,7 @@ def getPublicLocation():
         return _GET(request.args, mongo.db.loc_public)
 
 
-@app.route('/location/staged', methods=['GET'])
+@app.route('/api/location', methods=['GET'])
 @jwt_required
 @roles_required('admin')
 def getStagedLocation():
@@ -79,7 +79,7 @@ def _GET(requestArgs, collection):
         return jsonify(data), 200
 
 
-@app.route('/location/staged', methods=['POST', 'DELETE', 'PATCH'])
+@app.route('/api/location', methods=['POST', 'DELETE', 'PATCH'])
 @jwt_required
 @roles_required('member')
 def postStagedLocation():

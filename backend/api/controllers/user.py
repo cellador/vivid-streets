@@ -5,7 +5,8 @@ from flask import request, jsonify
 from api import app, mongo, flask_bcrypt, jwt
 from api.schemas import (validate_user_authentication, validate_user_registration)
 from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                jwt_required, jwt_refresh_token_required, get_jwt_identity)
+                                jwt_required, jwt_refresh_token_required, get_jwt_identity,
+                                set_access_cookies, set_refresh_cookies, unset_jwt_cookies)
 
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
@@ -35,14 +36,15 @@ def auth_user():
             data['roles'] = user['roles']
             data['_id'] = user['_id']
             access_token = create_access_token(identity=data)
-            refresh_token = create_refresh_token(identity=data)  # new access token w/o calling auth
-            user['token'] = access_token
-            user['refresh'] = refresh_token
-            return jsonify({'ok': True, 'data': user}), 200
+            refresh_token = create_refresh_token(identity=data)
+            resp = jsonify({'login': True})
+            set_access_cookies(resp, access_token)
+            set_refresh_cookies(resp, refresh_token)
+            return resp, 200
         else:
-            return jsonify({'ok': False, 'message': 'invalid username or password'}), 401
+            return jsonify({'login': False, 'message': 'invalid username or password'}), 401
     else:
-        return jsonify({'ok': False, 'message': 'Bad request parameters: {}'.format(data['message'])}), 400
+        return jsonify({'login': False, 'message': 'Bad request parameters: {}'.format(data['message'])}), 400
 
 
 @app.route('/register', methods=['POST'])  # registering a new user
@@ -53,6 +55,7 @@ def register():
         data = data['data']
         data['password'] = flask_bcrypt.generate_password_hash(
             data['password'])  # encrypt password
+        data['roles'] = ['member']
         mongo.db.users.insert_one(data)  # store data in db
         return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
     else:
@@ -60,17 +63,27 @@ def register():
 
 
 @app.route('/refresh', methods=['POST'])
-@jwt_refresh_token_required  # request object must contain refresh_token in authorization header
+@jwt_refresh_token_required
 def refresh():
     ''' refresh token endpoint '''
-    current_user = get_jwt_identity()  # get user data
-    ret = {
-        'token': create_access_token(identity=current_user)
-    }
-    return jsonify({'ok': True, 'data': ret}), 200
+    current_user = get_jwt_identity()
+    access_token = create_access_token(identity=current_user)
+
+    # Set the access JWT and CSRF double submit protection cookies
+    # in this response
+    resp = jsonify({'refresh': True})
+    set_access_cookies(resp, access_token)
+    return resp, 200
 
 
-@app.route('/user', methods=['GET', 'DELETE', 'PATCH'])
+@app.route('/logout', methods=['POST'])
+def logout():
+    resp = jsonify({'logout': True})
+    unset_jwt_cookies(resp)
+    return resp, 200
+
+
+@app.route('/api/user', methods=['GET', 'DELETE', 'PATCH'])
 @jwt_required
 def user():
     ''' route read user '''

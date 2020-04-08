@@ -5,9 +5,6 @@ from jsonschema.exceptions import SchemaError
 user_creation_schema = {
     "type": "object",
     "properties": {
-        "username": {
-            "type": "string",
-        },
         "email": {
             "type": "string",
             "format": "email"
@@ -15,17 +12,17 @@ user_creation_schema = {
         "password": {
             "type": "string",
             "minLength": 5
-        },
-        "roles": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "type": "string",
-                "enum": ["admin", "member"]
-            }
         }
+        # "roles": {
+        #     "type": "array",
+        #     "minItems": 1,
+        #     "items": {
+        #         "type": "string",
+        #         "enum": ["admin", "member"]
+        #     }
+        # }
     },
-    "required": ["username", "email", "password", "roles"],
+    "required": ["email", "password"],
     "additionalProperties": False
 }
 

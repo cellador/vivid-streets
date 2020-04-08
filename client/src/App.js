@@ -4,6 +4,7 @@ import './App.css';
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
 import SignUp from './modal/SignUp.js'
+import Login from './modal/Login.js'
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 
@@ -63,11 +64,8 @@ class App extends Component {
             // Important! Always set the container height explicitly
             <div style={{ height: '100vh', width: '100%' }}>
                 <Menu>
-                    <a id="home" className="menu-item" href="/">Home</a>
+                    <Login className="menu-item">Login</Login>
                     <SignUp className="menu-item">Sign Up</SignUp>
-                    <a id="about" className="menu-item" href="/about">About</a>
-                    <a id="contact" className="menu-item" href="/contact">Contact</a>
-                    <a onClick={ this.showSettings } className="menu-item--small" href="">Settings</a>
                 </Menu>
 
 

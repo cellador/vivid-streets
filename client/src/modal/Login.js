@@ -2,7 +2,7 @@ import Modal from "./Modal.js";
 import { CONFIG } from '../config.js'
 import React, { Component } from 'react';
 
-class SignUp extends Component {
+class Login extends Component {
 
   constructor(props) {
     super(props)
@@ -23,7 +23,7 @@ class SignUp extends Component {
     this.setState({ show: !this.state.show });
   };
 
-  signUp = () => {
+  login = () => {
     if (this.state.password !== this.state.confirm_password){
         console.log('Passwords do not match')
         return null;
@@ -43,8 +43,11 @@ class SignUp extends Component {
 
     const requestOptions = {
         method: 'POST',
+        credentials: 'include',
         headers: { 
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Credentials': 'true'
+          // 'X-CSRF-TOKEN': docsrf_access_token
         },
         body: JSON.stringify({ 
           email: this.state.email,
@@ -52,7 +55,7 @@ class SignUp extends Component {
         })
     };
 
-    fetch( CONFIG.API_BASE_URL + '/register', 
+    fetch( CONFIG.API_BASE_URL + '/auth', 
           requestOptions)
         .then(async response => {
             const data = await response.json();
@@ -122,7 +125,7 @@ class SignUp extends Component {
           </tr>
           </tbody>
           </table>
-          <button onClick={this.signUp}>
+          <button onClick={this.login}>
           Sign Up
           </button>
           {this.state.message}
@@ -132,4 +135,4 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+export default Login;
