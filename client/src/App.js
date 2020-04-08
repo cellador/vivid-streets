@@ -31,6 +31,7 @@ class App extends Component {
     async componentDidMount() {
 
         const queryString = objToQueryString({
+            collection: "public",
             queryType: "loc",
             latMin: -90,
             latMax: 90,
