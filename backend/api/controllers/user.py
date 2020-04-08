@@ -3,7 +3,7 @@ import os
 import logger
 from flask import request, jsonify
 from api import app, mongo, flask_bcrypt, jwt
-from api.schemas import validate_user
+from api.schemas import (validate_user_authentication, validate_user_registration)
 from flask_jwt_extended import (create_access_token, create_refresh_token,
                                 jwt_required, jwt_refresh_token_required, get_jwt_identity)
 
@@ -25,14 +25,15 @@ def unauthorized_response(callback):
 @app.route('/auth', methods=['POST'])  # login/authentification route
 def auth_user():
     ''' auth endpoint '''
-    data = validate_user(request.get_json())
+    data = validate_user_authentication(request.get_json())
     if data['ok']:
         data = data['data']
-        user = mongo.db.users.find_one({'email': data['email']}, {"_id": 0})
-        data['role'] = user['role']
-        LOG.debug(user)
+        user = mongo.db.users.find_one({'email': data['email']})
         if user and flask_bcrypt.check_password_hash(user['password'], data['password']): #check for user and password
             del user['password']
+            # Copy roles and id from user to JWT
+            data['roles'] = user['roles']
+            data['_id'] = user['_id']
             access_token = create_access_token(identity=data)
             refresh_token = create_refresh_token(identity=data)  # new access token w/o calling auth
             user['token'] = access_token
@@ -47,7 +48,7 @@ def auth_user():
 @app.route('/register', methods=['POST'])  # registering a new user
 def register():
     ''' register user endpoint '''
-    data = validate_user(request.get_json())  # check if received data valid and in required format
+    data = validate_user_registration(request.get_json())  # check if received data valid and in required format
     if data['ok']:
         data = data['data']
         data['password'] = flask_bcrypt.generate_password_hash(

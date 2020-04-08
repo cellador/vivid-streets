@@ -21,7 +21,7 @@ location_schema = {
             "type": "string",
         }
     },
-    "required": ["longitude", "latitude","user_id"],
+    "required": ["longitude", "latitude", "user_id"],
     "additionalProperties": False
 }
 

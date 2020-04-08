@@ -4,6 +4,7 @@ import logger
 from flask import request, jsonify
 from api import app, mongo
 from api.schemas import validate_location
+from api.decorators import roles_required
 from flask_jwt_extended import (jwt_required, get_jwt_identity)
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
@@ -13,31 +14,19 @@ LOG.info("Loaded api.controllers.location.py")
 
 
 @app.route('/location', methods=['GET'])
-def handleGET():
-    """Handle public and staged locations.
-
-    We rely on the 'collection' request arg to define which collection (public/staged) is
-    spoken to. We then pass the request to the proper collection.
-    """
-    # Enforce collection
-    requestArgs = request.args
-
-    try:
-        collectionArg = requestArgs.get('collection', type=str)
-
-        if collectionArg != "public" and collectionArg != "staged":
-            raise AttributeError()
-    except AttributeError as err:
-        return jsonify(
-            'Invalid URI parameter "collection". Values allowed: "public" and "staged"'), 400
-
-    if collectionArg == "public":
-        collection = mongo.db.loc_public
-    else:
-        collection = mongo.db.loc_staged
-
+def getPublicLocation():
+    """Handle public locations."""
     if request.method == 'GET':
-        return _GET(requestArgs, collection)
+        return _GET(request.args, mongo.db.loc_public)
+
+
+@app.route('/location/staged', methods=['GET'])
+@jwt_required
+@roles_required('admin')
+def getStagedLocation():
+    """Handle private locations."""
+    if request.method == 'GET':
+        return _GET(request.args, mongo.db.loc_staged)
 
 
 def _GET(requestArgs, collection):
@@ -47,6 +36,7 @@ def _GET(requestArgs, collection):
 
         if queryType != "loc" and queryType != "label":
             raise AttributeError()
+
     except AttributeError as err:
         return jsonify(
             'Invalid URI parameter "queryType". Values allowed: "loc" and "label"'), 400
@@ -89,48 +79,31 @@ def _GET(requestArgs, collection):
         return jsonify(data), 200
 
 
-@app.route('/location', methods=['POST', 'DELETE', 'PATCH'])
+@app.route('/location/staged', methods=['POST', 'DELETE', 'PATCH'])
 @jwt_required
-def handleOTHER():
-    """Handle public and staged locations.
+@roles_required('member')
+def postStagedLocation():
+    """Post staged location.
 
-    We rely on the 'collection' request arg to define which collection (public/staged) is
-    spoken to. We then pass the request to the proper collection.
+    Only accessible for member and admin.
     """
     # Enforce collection
-
-    ############################################
-    ########## YOU CAN GET IDENTITY
-    ########## WHICH IS STORING EVERYTHING YOU PASS DURING auth()
-    ########## BUT ONLY USING ROUTES WITH @jwt_required
-    identity = get_jwt_identity()
-    LOG.info(identity)
-
-    requestArgs = request.args
-
-    try:
-        collectionArg = requestArgs.get('collection', type=str)
-
-        if collectionArg != "public" and collectionArg != "staged":
-            raise AttributeError()
-    except AttributeError as err:
-        return jsonify(
-            'Invalid URI parameter "collection". Values allowed: "public" and "staged"'), 400
-
-    if collectionArg == "public":
-        collection = mongo.db.loc_public
+    if request.is_json:
+        data = request.get_json()
     else:
-        collection = mongo.db.loc_staged
+        return jsonify('Request body must be JSON.'), 400
 
-    data = request.get_json()
+    user = get_jwt_identity()
+    data['user_id'] = user['_id']
+
     if request.method == 'POST':
-        return _POST(data, collection)
+        return _POST(data, mongo.db.loc_staged)
 
     if request.method == 'DELETE':
-        return _DELETE(data, collection)
+        return _DELETE(data, mongo.db.loc_staged)
 
     if request.method == 'PATCH':
-        return _PATCH(data, collection)
+        return _PATCH(data, mongo.db.loc_staged)
 
 
 def _POST(data, collection):
@@ -144,11 +117,11 @@ def _POST(data, collection):
 
 
 def _DELETE(data, collection):
-    pass
+    pass  # Delete stub, could be implemented as above using a schema or as below
 
 
 def _PATCH(data, collection):
-    pass
+    pass  # Patch stub, could be implemented as above using a schema or as below
 
 # #staged location api endpoints
 # @app.route('/location_staged', methods=['GET', 'POST', 'DELETE', 'PATCH'])
