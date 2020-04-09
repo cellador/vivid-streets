@@ -35,13 +35,6 @@ services:
     depends_on:
       - mongodb
 
-  #mongo_seed:
-  #  build: ./mongo-seed
-  #  links:
-  #    - mongodb
-  #  depends_on:
-  #    - flask-api
-
   client:
     container_name: react-app
     build:
@@ -51,15 +44,15 @@ services:
       - './client:/usr/src/app'
       - '/usr/src/app/node_modules'
     ports:
-      - '3000:3000'
+      - '80:80'
     tty: true
     depends_on:
       - flask-api
     environment:
+      - PORT=80
       - NODE_ENV=development
       - NODE_PATH=/usr/src/app/node_modules
       - CHOKIDAR_USEPOLLING=true
-    #  - HOST_URL=http://0.0.0.0:5000
     env_file:
       - react-secret.env
 

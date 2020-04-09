@@ -1,5 +1,5 @@
 import functools
-from flask import abort
+from flask import abort, make_response, jsonify
 from flask_jwt_extended import get_jwt_identity
 
 
@@ -10,7 +10,7 @@ def roles_required(*role_names):
         def decorated_route(*args, **kwargs):
             identity = get_jwt_identity()
             if identity is None:
-                abort(401)  # 401 Unauthorized
+                abort(make_response(jsonify(message="Missing Authorization"), 401))
 
             missing_roles = [
                 role_name
@@ -19,7 +19,7 @@ def roles_required(*role_names):
             ]
 
             if missing_roles:
-                abort(401)
+                abort(make_response(jsonify(message="You do not have the necessary permissions."), 401))
 
             return original_route(*args, **kwargs)
 

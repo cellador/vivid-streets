@@ -3,6 +3,7 @@ import { CONFIG } from './config.js'
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
+import authFetch from './helper/AuthFetch.jsx'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
 
@@ -64,8 +65,12 @@ class App extends Component {
             // Important! Always set the container height explicitly
             <div style={{ height: '100vh', width: '100%' }}>
                 <Menu>
-                    <Login className="menu-item">Login</Login>
                     <SignUp className="menu-item">Sign Up</SignUp>
+                    <Login className="menu-item">Login</Login>
+                    <button className="link-looking-button" onClick={() => 
+                        authFetch("/api/location?queryType=loc", {method: 'GET'})}>Need to be logged in</button>
+                    <button className="link-looking-button" onClick={() => 
+                        authFetch("/logout", {method: 'POST'})}>Logout</button>
                 </Menu>
 
 

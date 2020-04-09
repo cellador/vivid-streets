@@ -1,5 +1,6 @@
 import Modal from "./Modal.js";
 import { CONFIG } from '../config.js'
+import authFetch from '../helper/AuthFetch.jsx'
 import React, { Component } from 'react';
 
 class Login extends Component {
@@ -39,44 +40,6 @@ class Login extends Component {
       console.log('Email is already taken')
       return null;
     }
-
-
-    const requestOptions = {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': 'true'
-          // 'X-CSRF-TOKEN': docsrf_access_token
-        },
-        body: JSON.stringify({ 
-          email: this.state.email,
-          password: this.state.password
-        })
-    };
-
-    fetch( CONFIG.API_BASE_URL + '/auth', 
-          requestOptions)
-        .then(async response => {
-            const data = await response.json();
-
-            // check for error response
-            if (!response.ok) {
-                // get error message from body or default to response status
-                const error = (data && data.message) || response.status;
-                return Promise.reject(error);
-            }
-
-            this.setState({ message: data.message });
-            console.log(this.state.message);
-        })
-        .catch(error => {
-            this.setState({ errorMessage: error });
-            console.error('There was an error!', error);
-        });
-
-    // Send the information to the database
-
   };
 
   handleChangeEmail = (event) => {
@@ -125,7 +88,17 @@ class Login extends Component {
           </tr>
           </tbody>
           </table>
-          <button onClick={this.login}>
+          <button onClick={() => 
+            authFetch("/auth", {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ 
+                email: this.state.email,
+                password: this.state.password
+              })
+            })}>
           Sign Up
           </button>
           {this.state.message}

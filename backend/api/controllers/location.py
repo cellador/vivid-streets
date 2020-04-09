@@ -2,6 +2,7 @@
 import os
 import logger
 from flask import request, jsonify
+# from flask_cors import cross_origin
 from api import app, mongo
 from api.schemas import validate_location
 from api.decorators import roles_required
@@ -14,6 +15,7 @@ LOG.info("Loaded api.controllers.location.py")
 
 
 @app.route('/location', methods=['GET'])
+# @cross_origin()
 def getPublicLocation():
     """Handle public locations."""
     if request.method == 'GET':
@@ -22,7 +24,7 @@ def getPublicLocation():
 
 @app.route('/api/location', methods=['GET'])
 @jwt_required
-@roles_required('admin')
+@roles_required('member')
 def getStagedLocation():
     """Handle private locations."""
     if request.method == 'GET':

@@ -19,7 +19,7 @@ LOG.info("Loaded api.controllers.user.py")
 def unauthorized_response(callback):
     return jsonify({
         'ok': False,
-        'message': 'Missing Authorization Header'
+        'message': 'Missing Authorization'
     }), 401
 
 
