@@ -61,26 +61,33 @@ class BusinessPage extends Component {
           Close this shit!
         </button>
 
-        <div>
-        <h1>
-          {this.state.name}
-        </h1>
-        <img src={LSW_Image} width="200" height="200"/>
+        <header>
+          <h1>
+            {this.state.name}
+          </h1>
+          <img src={LSW_Image} width="200" height="200"/>
+        </header>
+
+
+        <div class="mainBusiness">
+          <h2>
+            {this.state.header}
+          </h2>
+          <body>
+            {this.state.description}
+          </body>
         </div>
-        <h2>
-          {this.state.header}
-        </h2>
-        <body>
-        {this.state.description}
-        <tr>
+
+        <footer>
+          <tr>
             <td> Our Website </td>
             <td> <a href={this.state.website}> {this.state.website} </a> <  /td>
-        </tr>
-        <tr>
+          </tr>
+          <tr>
             <td> Our PayPal Link </td>
             <td>  <a href={this.state.paypal}> {this.state.paypal} </a> </td>
-        </tr>
-        </body>
+          </tr>
+        </footer>
 
       </Modal>
     )
