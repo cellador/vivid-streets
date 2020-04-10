@@ -50,7 +50,7 @@ class App extends Component {
                     const error = (data && data.message) || response.statusText;
                     return Promise.reject(error);
                 }
-
+                console.log(data);
                 this.setState({locations: data});
             })
             .catch(error => {
@@ -80,6 +80,7 @@ class App extends Component {
                 >
                 {this.state.locations.map((loc) => (
                     <BusinessMarker key={loc._id}
+                        businessID={loc._id}
                         lat={loc.latitude}
                         lng={loc.longitude}
                         text="My Marker"
