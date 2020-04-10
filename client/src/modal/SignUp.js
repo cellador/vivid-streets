@@ -52,6 +52,7 @@ class SignUp extends Component {
         })
     };
 
+    // Send the information to the database
     fetch( CONFIG.API_BASE_URL + '/register', 
           requestOptions)
         .then(async response => {
@@ -72,7 +73,6 @@ class SignUp extends Component {
             console.error('There was an error!', error);
         });
 
-    // Send the information to the database
 
   };
 

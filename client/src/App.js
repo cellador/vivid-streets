@@ -3,7 +3,8 @@ import { CONFIG } from './config.js'
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
-import authFetch from './helper/AuthFetch.jsx'
+import RequiresMembership from './rbac/RequiresMembership.jsx'
+import authFetch from './helper/AuthFetch'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
 
@@ -20,8 +21,10 @@ function objToQueryString(obj) {
 class App extends Component {
     constructor (props) {
         super(props);
+        this.setPermissions = this.setPermissions.bind(this);
         this.state = {
-            locations: []
+            locations: [],
+            permissions: []
         };
     }
 
@@ -30,8 +33,15 @@ class App extends Component {
         zoom: 13
     };
 
-    async componentDidMount() {
+    setPermissions(promise) {
+        promise.then((result) => {
+            if(result['ok'] === true) {
+                this.setState({permissions: result['roles']});
+            }
+        })
+    }
 
+    async componentDidMount() {
         const queryString = objToQueryString({
             collection: "public",
             queryType: "loc",
@@ -66,11 +76,13 @@ class App extends Component {
             <div style={{ height: '100vh', width: '100%' }}>
                 <Menu>
                     <SignUp className="menu-item">Sign Up</SignUp>
-                    <Login className="menu-item">Login</Login>
+                    <Login setPermissions={this.setPermissions} className="menu-item">Login</Login>
+                    <RequiresMembership permissions={this.state.permissions}>
                     <button className="link-looking-button" onClick={() => 
                         authFetch("/api/location?queryType=loc", {method: 'GET'})}>Need to be logged in</button>
+                    </RequiresMembership>
                     <button className="link-looking-button" onClick={() => 
-                        authFetch("/logout", {method: 'POST'})}>Logout</button>
+                        this.setPermissions(authFetch("/logout", {method: 'POST'}))}>Logout</button>
                 </Menu>
 
 

@@ -37,14 +37,17 @@ def auth_user():
             data['_id'] = user['_id']
             access_token = create_access_token(identity=data)
             refresh_token = create_refresh_token(identity=data)
-            resp = jsonify({'login': True})
+            resp = jsonify({'ok': True, 'roles': user['roles']})
+            # resp.set_cookie('roles', str(user['roles']), 
+            #                 samesite="strict", 
+            #                 secure=os.environ.get('ENV') == 'production')
             set_access_cookies(resp, access_token)
             set_refresh_cookies(resp, refresh_token)
             return resp, 200
         else:
-            return jsonify({'login': False, 'message': 'invalid username or password'}), 401
+            return jsonify({'ok': False, 'message': 'invalid username or password'}), 401
     else:
-        return jsonify({'login': False, 'message': 'Bad request parameters: {}'.format(data['message'])}), 400
+        return jsonify({'ok': False, 'message': 'Bad request parameters: {}'.format(data['message'])}), 400
 
 
 @app.route('/register', methods=['POST'])  # registering a new user
@@ -78,7 +81,7 @@ def refresh():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    resp = jsonify({'logout': True})
+    resp = jsonify({'ok': True, 'roles': []})
     unset_jwt_cookies(resp)
     return resp, 200
 

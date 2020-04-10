@@ -1,10 +1,8 @@
 import Modal from "./Modal.js";
-import { CONFIG } from '../config.js'
 import authFetch from '../helper/AuthFetch.jsx'
 import React, { Component } from 'react';
 
 class Login extends Component {
-
   constructor(props) {
     super(props)
     this.state = {
@@ -59,7 +57,7 @@ class Login extends Component {
       <div>
         <button className="link-looking-button" onClick={this.switch}>{this.props.children}</button>
         <Modal show={this.state.show}>
-          Sign Up for an Account
+          Login to your account
           <button onClick={this.switch}>
             Close this shit!
           </button>
@@ -89,17 +87,19 @@ class Login extends Component {
           </tbody>
           </table>
           <button onClick={() => 
-            authFetch("/auth", {
-              method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ 
-                email: this.state.email,
-                password: this.state.password
+            this.props.setPermissions(
+              authFetch("/auth", {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                  email: this.state.email,
+                  password: this.state.password
+                })
               })
-            })}>
-          Sign Up
+            )}>
+          Login
           </button>
           {this.state.message}
         </Modal>

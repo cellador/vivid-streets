@@ -6,6 +6,8 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.4.0",
+    "prop-types": "15.7.2",
+    "hoist-non-react-statics": "3.3.2",
     "google-map-react": "1.1.7",
     "react-burger-menu": "2.6.13"
   },

@@ -12,13 +12,14 @@ from flask_bcrypt import Bcrypt  # encrypts passwords
 
 # create the flask object
 app = Flask(__name__)
-cors = CORS(app, supports_credentials=True)#, resources={
-#     r"/*": {"origins": "http://0.0.0.0"}}#,
-#     r"/location": {"origins": "http://0.0.0.0"},
-#     r"/auth": {"origins": "http://0.0.0.0"},
-#     r"/register": {"origins": "http://0.0.0.0"},
-#     r"/api/location": {"origins": "http://0.0.0.0"}
-# )
+cors = CORS(app, supports_credentials=True)#, resources= {
+#     r"/location": {"origins": "http://127.0.0.1"},
+#     r"/": {"origins": "http://127.0.0.1"},
+#     r"/location": {"origins": "http://127.0.0.1"},
+#     r"/auth": {"origins": "http://127.0.0.1"},
+#     r"/register": {"origins": "http://127.0.0.1"},
+#     r"/api/location": {"origins": "http://127.0.0.1"}
+# })
 flask_bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
@@ -40,6 +41,8 @@ app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 # Only allow JWT cookies to be sent over https. In production, this
 # should likely be True
 app.config['JWT_COOKIE_SECURE'] = os.environ.get('ENV') == 'production'
+
+app.config['JWT_COOKIE_SAMESITE'] = 'strict'  # lax
 
 # Set the cookie paths, so that you are only sending your access token
 # cookie to the access endpoints, and only sending your refresh token
