@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Modal from "./modal/Modal.js";
+import LSW_Image from "./tmp_images/LSW.jpg"
 
 class BusinessMarker extends Component {
 
@@ -60,10 +61,12 @@ class BusinessPage extends Component {
           Close this shit!
         </button>
 
+        <div>
         <h1>
           {this.state.name}
         </h1>
-        <img src="./LSW.jpg" />
+        <img src={LSW_Image} width="200" height="200"/>
+        </div>
         <h2>
           {this.state.header}
         </h2>
