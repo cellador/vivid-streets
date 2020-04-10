@@ -6,8 +6,7 @@ import Menu from 'react-burger-menu/lib/menus/slide'
 import authFetch from './helper/AuthFetch.jsx'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
-
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+import BusinessMarker from './Marker.js'
 
 function objToQueryString(obj) {
   const keyValuePairs = [];
@@ -67,9 +66,9 @@ class App extends Component {
                 <Menu>
                     <SignUp className="menu-item">Sign Up</SignUp>
                     <Login className="menu-item">Login</Login>
-                    <button className="link-looking-button" onClick={() => 
+                    <button className="link-looking-button" onClick={() =>
                         authFetch("/api/location?queryType=loc", {method: 'GET'})}>Need to be logged in</button>
-                    <button className="link-looking-button" onClick={() => 
+                    <button className="link-looking-button" onClick={() =>
                         authFetch("/logout", {method: 'POST'})}>Logout</button>
                 </Menu>
 
@@ -80,7 +79,7 @@ class App extends Component {
                     defaultZoom={this.props.zoom}
                 >
                 {this.state.locations.map((loc) => (
-                    <AnyReactComponent key={loc._id}
+                    <BusinessMarker key={loc._id}
                         lat={loc.latitude}
                         lng={loc.longitude}
                         text="My Marker"
