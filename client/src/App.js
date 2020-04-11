@@ -5,6 +5,7 @@ import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
 import RequiresMembership from './rbac/RequiresMembership.jsx'
 import authFetch from './helper/AuthFetch'
+import { setCookie, getCookie } from './helper/Cookie'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
 
@@ -34,14 +35,25 @@ class App extends Component {
     };
 
     setPermissions(promise) {
-        promise.then((result) => {
+        return promise.then((result) => {
             if(result['ok'] === true) {
                 this.setState({permissions: result['roles']});
+                return Promise.resolve({'status': true, 'roles': result['roles']});
+            } else {
+                this.setstate({permissions: []});
+                return Promise.reject({'status': false});
             }
-        })
+        }).catch((error) => {return error});
     }
 
     async componentDidMount() {
+
+        // Restore old permissions
+        const roles = getCookie("vs_roles");
+        if(roles !== null) {
+            this.setState({permissions: roles});
+        }
+
         const queryString = objToQueryString({
             collection: "public",
             queryType: "loc",
@@ -81,8 +93,10 @@ class App extends Component {
                     <button className="link-looking-button" onClick={() => 
                         authFetch("/api/location?queryType=loc", {method: 'GET'})}>Need to be logged in</button>
                     </RequiresMembership>
-                    <button className="link-looking-button" onClick={() => 
-                        this.setPermissions(authFetch("/logout", {method: 'POST'}))}>Logout</button>
+                    <button className="link-looking-button" onClick={() => {
+                        setCookie("vs_roles","",0);
+                        this.setPermissions(authFetch("/logout", {method: 'POST'}));
+                    }}>Logout</button>
                 </Menu>
 
 

@@ -1,5 +1,6 @@
 import Modal from "./Modal.js";
 import authFetch from '../helper/AuthFetch.jsx'
+import { setCookie } from '../helper/Cookie.jsx'
 import React, { Component } from 'react';
 
 class Login extends Component {
@@ -31,13 +32,30 @@ class Login extends Component {
       console.log('Passwords match');
     }
 
-    if (this.check_available()){
+    if (this.check_available()) {
       console.log('Email is Available')
     }
     else {
       console.log('Email is already taken')
       return null;
     }
+
+    this.props.setPermissions(
+      authFetch("/auth", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password
+        })
+      })
+    ).then((perm) => {
+      if(perm['status']) {
+        setCookie("vs_roles",perm['roles']);
+      }
+    });
   };
 
   handleChangeEmail = (event) => {
@@ -86,21 +104,7 @@ class Login extends Component {
           </tr>
           </tbody>
           </table>
-          <button onClick={() => 
-            this.props.setPermissions(
-              authFetch("/auth", {
-                method: 'POST',
-                headers: { 
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                  email: this.state.email,
-                  password: this.state.password
-                })
-              })
-            )}>
-          Login
-          </button>
+          <button onClick={this.login}>Login</button>
           {this.state.message}
         </Modal>
       </div>
