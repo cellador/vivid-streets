@@ -3,9 +3,10 @@ import { CONFIG } from './config.js'
 import './App.css';
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
-import RequiresMembership from './rbac/RequiresMembership.jsx'
 import authFetch from './helper/AuthFetch'
 import { setCookie, getCookie } from './helper/Cookie'
+import AdminPanel from './modal/AdminPanel.js'
+import RequiresAdmin from './rbac/RequiresAdmin'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
 
@@ -34,10 +35,11 @@ class App extends Component {
         zoom: 13
     };
 
-    setPermissions(promise) {
-        return promise.then((result) => {
+    async setPermissions(promise) {
+        return promise.then(async result => {
             if(result['ok'] === true) {
                 this.setState({permissions: result['roles']});
+                console.log(this.state.permissions);
                 return Promise.resolve({'status': true, 'roles': result['roles']});
             } else {
                 this.setstate({permissions: []});
@@ -47,7 +49,6 @@ class App extends Component {
     }
 
     async componentDidMount() {
-
         // Restore old permissions
         const roles = getCookie("vs_roles");
         if(roles !== null) {
@@ -89,10 +90,9 @@ class App extends Component {
                 <Menu>
                     <SignUp className="menu-item">Sign Up</SignUp>
                     <Login setPermissions={this.setPermissions} className="menu-item">Login</Login>
-                    <RequiresMembership permissions={this.state.permissions}>
-                    <button className="link-looking-button" onClick={() => 
-                        authFetch("/api/location?queryType=loc", {method: 'GET'})}>Need to be logged in</button>
-                    </RequiresMembership>
+                    <RequiresAdmin permissions={this.state.permissions}>
+                    <AdminPanel setPermissions={this.setPermissions} className="menu-item">Admin Panel</AdminPanel>
+                    </RequiresAdmin>
                     <button className="link-looking-button" onClick={() => {
                         setCookie("vs_roles","",0);
                         this.setPermissions(authFetch("/logout", {method: 'POST'}));

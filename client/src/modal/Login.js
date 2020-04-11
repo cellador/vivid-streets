@@ -19,7 +19,7 @@ class Login extends Component {
     return true;
   }
 
-  switch = () => {
+  toggleVisibility = () => {
     this.setState({ show: !this.state.show });
   };
 
@@ -73,12 +73,9 @@ class Login extends Component {
   render() {
     return (
       <div>
-        <button className="link-looking-button" onClick={this.switch}>{this.props.children}</button>
-        <Modal show={this.state.show}>
+        <button className="link-looking-button" onClick={this.toggleVisibility}>{this.props.children}</button>
+        <Modal toggleVisibility={this.toggleVisibility} show={this.state.show}>
           Login to your account
-          <button onClick={this.switch}>
-            Close this shit!
-          </button>
           <table><thead></thead>
           <tbody>
           <tr>
