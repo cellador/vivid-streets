@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+  } from "react-router-dom";
 import { CONFIG } from './config.js'
 import './App.css';
+// External libraries
 import GoogleMapReact from 'google-map-react';
 import Menu from 'react-burger-menu/lib/menus/slide'
+// Helper
 import authFetch from './helper/AuthFetch'
 import { setCookie, getCookie } from './helper/Cookie'
+import objToQueryString from './helper/objToQueryString'
+// RBAC
 import AdminPanel from './modal/AdminPanel.js'
 import RequiresAdmin from './rbac/RequiresAdmin'
 import SignUp from './modal/SignUp.js'
 import Login from './modal/Login.js'
 
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
-
-function objToQueryString(obj) {
-  const keyValuePairs = [];
-  for (const key in obj) {
-    keyValuePairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
-  }
-  return keyValuePairs.join('&');
-}
 
 class App extends Component {
     constructor (props) {
@@ -85,39 +87,44 @@ class App extends Component {
 
     render() {
         return (
-            // Important! Always set the container height explicitly
             <div style={{ height: '100vh', width: '100%' }}>
-                <Menu>
-                    <SignUp className="menu-item">Sign Up</SignUp>
-                    <Login setPermissions={this.setPermissions} className="menu-item">Login</Login>
-                    <RequiresAdmin permissions={this.state.permissions}>
-                    <AdminPanel setPermissions={this.setPermissions} className="menu-item">Admin Panel</AdminPanel>
-                    </RequiresAdmin>
-                    <button className="link-looking-button" onClick={() => {
-                        setCookie("vs_roles","",0);
-                        this.setPermissions(authFetch("/logout", {method: 'POST'}));
-                    }}>Logout</button>
-                </Menu>
-
-
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
-                    defaultCenter={this.props.center}
-                    defaultZoom={this.props.zoom}
-                >
-                {this.state.locations.map((loc) => (
-                    <AnyReactComponent key={loc._id}
-                        lat={loc.latitude}
-                        lng={loc.longitude}
-                        text="My Marker"
-                    />
-                ))}
-                </GoogleMapReact>
-
-
+                <Router>
+                    <Menu>
+                        <SignUp className="menu-item">Sign Up</SignUp>
+                        <Login setPermissions={this.setPermissions} className="menu-item">Login</Login>
+                        <RequiresAdmin permissions={this.state.permissions}>
+                        <Link to="/admin">Admin Panel</Link>
+                        </RequiresAdmin>
+                        <button className="link-looking-button" onClick={() => {
+                            setCookie("vs_roles","",0);
+                            this.setPermissions(authFetch("/logout", {method: 'POST'}));
+                        }}>Logout</button>
+                    </Menu>
+                    <Switch>
+                        <Route exact path="/">
+                            <GoogleMapReact
+                                bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY }}
+                                defaultCenter={this.props.center}
+                                defaultZoom={this.props.zoom}
+                            >
+                            {this.state.locations.map((loc) => (
+                                <AnyReactComponent key={loc._id}
+                                    lat={loc.latitude}
+                                    lng={loc.longitude}
+                                    text="My Marker"
+                                />
+                            ))}
+                            </GoogleMapReact>
+                        </Route>
+                        <Route exact path="/admin">
+                            <Link to="/">Back</Link>
+                            <AdminPanel setPermissions={this.setPermissions}>Admin Panel</AdminPanel>
+                        </Route>
+                    </Switch>
+                </Router>
             </div>
         );
     }
-}
+};
 
 export default App;
